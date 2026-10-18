@@ -1,30 +1,16 @@
-END-TO-END minimal static site
+Replace eerie landing page with a silly Chrome-dino-like runner.
 
-This repository contains a minimal, monochrome, eerie landing page designed to be deployed as a static site on Vercel or Cloudflare Pages.
+Changes made:
+- index.html, styles.css, script.js updated to implement a simple runner game displayed on the root page.
+- Game is intentionally silly: extra obstacle types (banana, toilet), powerups that make the player big or tiny, goofy sound beeps, random gags.
+- Keeps a clean black-and-white aesthetic and the brand text 'ENDT-TO-END' visible.
 
-Files added:
-- index.html
-- styles.css
-- script.js
+How to use:
+- Open index.html or deploy the repo as a static site on Vercel / Cloudflare Pages.
+- Controls: Space, click, or tap to jump. Press Start to begin.
 
-How to deploy
-
-Vercel:
-1. Go to https://vercel.com and import this GitHub repository.
-2. Vercel will detect it as a static site. No build step is required.
-3. Set the root to `/` and deploy.
-
-Cloudflare Pages:
-1. Go to https://dash.cloudflare.com/pages and create a new project from GitHub.
-2. Select this repository. Build settings: Framework "None (Static HTML)". Build command: leave empty. Build output directory: `/`.
-3. Deploy.
-
-Customization
-
-- Edit the title text in index.html (currently "END-TO-END").
-- Adjust animation and intensity in script.js and styles.css.
-
-Notes
-
-- The design intentionally uses only black and white values and a clean serif headline.
-- If you want a different font or to host fonts locally, replace the Google Fonts link in index.html.
+If you want any of these tweaks next, tell me which and I'll update the code:
+- different obstacle art (SVG sprites) or colors
+- local audio files for better sounds
+- touch-specific controls and on-screen buttons
+- high score persistence using localStorage

@@ -3,29 +3,29 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>END-TO-END</title>
+  <title>ENDT-TO-END — stupid runner</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <div id="stage">
-    <!-- SVG noise + displacement for eerie effect -->
-    <svg id="noise" width="0" height="0" aria-hidden="true">
-      <filter id="turb">
-        <feTurbulence baseFrequency="0.8" numOctaves="2" result="turb" seed="2" />
-        <feDisplacementMap in="SourceGraphic" in2="turb" scale="10" xChannelSelector="R" yChannelSelector="G" />
-      </filter>
-    </svg>
+  <main id="game-area">
+    <header class="top">
+      <div class="brand">ENDT-TO-END</div>
+      <div class="score" id="score">0</div>
+    </header>
 
-    <div class="center" id="hero">
-      <h1 id="title">END-TO-END</h1>
-      <div id="sub" aria-hidden="true">nothing more</div>
+    <canvas id="game-canvas" width="800" height="200" aria-label="Stupid runner game"></canvas>
+
+    <div class="controls">
+      <button id="btn-start">Start</button>
+      <button id="btn-reset">Reset</button>
+      <div class="hint">Space / Click / Tap to jump</div>
     </div>
 
-    <canvas id="veil"></canvas>
-  </div>
+    <footer class="msg" id="message">Run. Jump. Be stupider.</footer>
+  </main>
 
   <script src="/script.js"></script>
 </body>
