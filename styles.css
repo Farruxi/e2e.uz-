@@ -1,0 +1,53 @@
+/* Minimal monochrome site: only white and black. Clean, creamy font (Playfair Display). */
+:root{
+  --bg:#ffffff;
+  --fg:#000000;
+}
+*{box-sizing:border-box}
+html,body,#stage{height:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--fg);
+  font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+#stage{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.center{position:relative;z-index:3;text-align:center;padding:6vmin}
+#title{
+  margin:0;
+  font-family:'Playfair Display', serif;
+  font-weight:700;
+  font-size:12vmin; /* responsive */
+  line-height:0.9;
+  letter-spacing:1vmin;
+  color:var(--fg);
+  -webkit-text-stroke: 0.6vmin rgba(0,0,0,0.02);
+  transform:translateZ(0);
+}
+#sub{margin-top:1.5rem;opacity:0.35;font-size:1.2rem;letter-spacing:0.4rem}
+
+/* subtle vignette using radial-gradient but still monochrome */
+#stage::before{
+  content:"";
+  position:absolute;inset:0;z-index:1;
+  background:radial-gradient(60% 60% at 50% 45%, rgba(0,0,0,0.02), rgba(0,0,0,0.06));
+  pointer-events:none;
+}
+
+/* canvas veil sits above background but under text */
+#veil{position:absolute;inset:0;z-index:2;mix-blend-mode:normal}
+
+/* flicker/glitch animation on load */
+@keyframes shard {
+  0%{transform:translateY(0) skewY(0) scaleX(1)}
+  50%{transform:translateY(-1.2vmin) skewY(-1deg) scaleX(1.01)}
+  100%{transform:translateY(0) skewY(0) scaleX(1)}
+}
+#title{animation:shard 6s ease-in-out infinite}
+
+/* reduce motion */
+@media (prefers-reduced-motion:reduce){
+  #title{animation:none}
+}

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>END-TO-END</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div id="stage">
+    <!-- SVG noise + displacement for eerie effect -->
+    <svg id="noise" width="0" height="0" aria-hidden="true">
+      <filter id="turb">
+        <feTurbulence baseFrequency="0.8" numOctaves="2" result="turb" seed="2" />
+        <feDisplacementMap in="SourceGraphic" in2="turb" scale="10" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </svg>
+
+    <div class="center" id="hero">
+      <h1 id="title">END-TO-END</h1>
+      <div id="sub" aria-hidden="true">nothing more</div>
+    </div>
+
+    <canvas id="veil"></canvas>
+  </div>
+
+  <script src="/script.js"></script>
+</body>
+</html>
