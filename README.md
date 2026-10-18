@@ -1,31 +1,30 @@
-Add a visit counter API and client integration.
+Visit counter (Vercel)
+
+This site shows a lifetime visit counter and the current visitor's IP in the browser. IMPORTANT: the server does NOT store visitor IPs — only a numeric lifetime counter is persisted.
 
 How it works
-- The front-end (script.js) calls GET /api/visit on page load.
-- /api/visit is a Vercel Serverless Function (api/visit.js) that reads and updates a file visits.json in the repository using the GitHub Contents API.
-- Each request increments a lifetime counter and records the visitor IP and timestamp (keeps last 200 entries).
+- The front-end calls GET /api/visit on page load.
+- /api/visit is a Vercel Serverless Function (api/visit.js) that reads and updates a file `visits.json` in the repository using the GitHub Contents API.
+- Each request increments a lifetime numeric counter. The function returns the current visitor's IP in the API response but does not persist it.
 
-Security & deployment notes
-- You MUST set a GITHUB_TOKEN environment variable in your Vercel project with permission to read/write the repository contents (repo scope for private repos, or public_repo for public repos).
-  - On Vercel: go to Project Settings → Environment Variables → Add GITHUB_TOKEN with your Personal Access Token.
-- The function will commit a new visits.json to the repo on first run and on each update. This creates commits — expect history growth.
+visits.json example (stored in repo after first visit):
+{
+  "count": 42
+}
 
-Privacy
-- The API records visitor IP addresses and stores them in visits.json. Displaying IPs may have privacy/legal implications depending on your audience and jurisdiction.
-- If you don't want to store IPs, remove the visitors array push in api/visit.js.
+Requirements for Vercel deployment
+1. Create a Personal Access Token (PAT) in GitHub with `public_repo` scope (for public repo) or `repo` scope (for private repo).
+2. In your Vercel project settings, add an Environment Variable named `GITHUB_TOKEN` and set it to the PAT.
+3. Redeploy the site on Vercel.
 
-Alternative (Cloudflare Pages / Workers)
-- If you deploy on Cloudflare Workers, use Workers KV or Durable Objects to store the counter. That approach is more robust and doesn't create repo commits. I can prepare a Worker version if you'd like.
+Privacy notes
+- This implementation does NOT store raw IPs. Only the numeric counter is stored in `visits.json`.
+- The API response returns the current visitor IP so the page can display it, but the IP is not written to the repository.
+- If you want further privacy measures (hashing, rate-limiting, or not returning the IP at all), I can adjust it.
 
-How to enable on Vercel
-1. Push these changes to the repo (already done).
-2. In your Vercel project settings create an environment variable named GITHUB_TOKEN and set it to a Personal Access Token with `repo` (or `public_repo`) scope.
-3. Redeploy the site.
+Alternatives
+- For production and higher scale, consider using Cloudflare Workers + KV or a small database (Supabase, Vercel KV) to avoid committing updates to the git history on every visit.
 
-How to view raw stored data
-- After deployment (and at least one visit) a file `visits.json` will appear in the repository root containing the counter and recent visitors.
-
-If you'd like I can:
-- Remove visitor IP storage and only keep a numeric count.
-- Swap out GitHub storage for a Cloudflare Worker + KV implementation (recommended for production).
-- Add a privacy notice on the page before showing the visitor IP.
+If you want, I can also:
+- Switch to a Worker + KV implementation and push that code.
+- Add a short privacy notice on the site before showing the IP.

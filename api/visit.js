@@ -1,5 +1,6 @@
 // Vercel serverless function: /api/visit
-// Stores visits in a file `visits.json` in this repository using the GitHub Contents API.
+// Stores only a numeric lifetime visit counter in `visits.json` in the repository using the GitHub Contents API.
+// This version DOES NOT store visitor IPs. It returns the current visitor IP in the response but does not persist it.
 // Requirements: set environment variable GITHUB_TOKEN (repo scope) in your Vercel project.
 
 const OWNER = 'Farruxi';
@@ -29,8 +30,8 @@ export default async function handler(req, res) {
     // GET current file (if exists)
     let getResp = await fetch(apiBase, { headers });
     if(getResp.status === 404){
-      // create new file
-      const initial = { count: 1, visitors: [{ ip, at: new Date().toISOString() }] };
+      // create new file containing only the numeric counter
+      const initial = { count: 1 };
       const content = Buffer.from(JSON.stringify(initial, null, 2)).toString('base64');
       const putResp = await fetch(apiBase, { method: 'PUT', headers: { ...headers, 'Content-Type': 'application/json' }, body: JSON.stringify({ message: 'Initialize visits.json', content }) });
       if(!putResp.ok){
@@ -52,13 +53,9 @@ export default async function handler(req, res) {
     const sha = file.sha;
     const decoded = Buffer.from(file.content, 'base64').toString('utf8');
     let data = {};
-    try{ data = JSON.parse(decoded); } catch(e){ data = { count:0, visitors:[] }; }
+    try{ data = JSON.parse(decoded); } catch(e){ data = { count:0 }; }
 
     data.count = (data.count || 0) + 1;
-    data.visitors = data.visitors || [];
-    data.visitors.push({ ip, at: new Date().toISOString() });
-    // keep last 200 entries to avoid huge file
-    if(data.visitors.length > 200) data.visitors = data.visitors.slice(-200);
 
     const newContent = Buffer.from(JSON.stringify(data, null, 2)).toString('base64');
     const putResp = await fetch(apiBase, { method: 'PUT', headers: { ...headers, 'Content-Type': 'application/json' }, body: JSON.stringify({ message: 'Increment visit count', content: newContent, sha }) });
