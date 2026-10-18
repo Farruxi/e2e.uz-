@@ -14,8 +14,9 @@ export default async function handler(req, res) {
   const ip = (req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.socket.remoteAddress || '').toString().split(',')[0].trim();
 
   if(!GITHUB_TOKEN){
-    // Persistent counter not available. Return a helpful error with IP only.
-    res.status(500).json({ error: 'GITHUB_TOKEN not set in environment. Set it in Vercel to enable persistent visit counter. See README.', ip });
+    // Graceful fallback so the site still renders and the user sees a clean state.
+    // The counter will work once GITHUB_TOKEN is configured in Vercel.
+    res.status(200).json({ count: 0, ip, warning: 'GITHUB_TOKEN not configured in Vercel yet.' });
     return;
   }
 
@@ -27,16 +28,14 @@ export default async function handler(req, res) {
   };
 
   try{
-    // GET current file (if exists)
     let getResp = await fetch(apiBase, { headers });
     if(getResp.status === 404){
-      // create new file containing only the numeric counter
       const initial = { count: 1 };
       const content = Buffer.from(JSON.stringify(initial, null, 2)).toString('base64');
       const putResp = await fetch(apiBase, { method: 'PUT', headers: { ...headers, 'Content-Type': 'application/json' }, body: JSON.stringify({ message: 'Initialize visits.json', content }) });
       if(!putResp.ok){
         const txt = await putResp.text();
-        res.status(500).json({ error: 'Failed to create visits.json', detail: txt });
+        res.status(200).json({ count: 0, ip, warning: 'Counter not ready yet: could not initialize visits.json.', detail: txt });
         return;
       }
       res.status(200).json({ count: 1, ip });
@@ -45,7 +44,7 @@ export default async function handler(req, res) {
 
     if(!getResp.ok){
       const txt = await getResp.text();
-      res.status(500).json({ error: 'Failed to read visits.json', detail: txt });
+      res.status(200).json({ count: 0, ip, warning: 'Counter could not be loaded yet.', detail: txt });
       return;
     }
 
@@ -61,13 +60,13 @@ export default async function handler(req, res) {
     const putResp = await fetch(apiBase, { method: 'PUT', headers: { ...headers, 'Content-Type': 'application/json' }, body: JSON.stringify({ message: 'Increment visit count', content: newContent, sha }) });
     if(!putResp.ok){
       const txt = await putResp.text();
-      res.status(500).json({ error: 'Failed to update visits.json', detail: txt });
+      res.status(200).json({ count: data.count || 0, ip, warning: 'The counter updated locally but GitHub write failed.', detail: txt });
       return;
     }
 
     res.status(200).json({ count: data.count, ip });
   } catch(err){
     console.error(err);
-    res.status(500).json({ error: 'unexpected error', detail: err.message || err, ip });
+    res.status(200).json({ count: 0, ip, warning: 'Counter failed unexpectedly; please check Vercel deployment and environment variables.' });
   }
 }
