@@ -1,16 +1,15 @@
-Replace eerie landing page with a silly Chrome-dino-like runner.
+Simplified site: keep only a large, centered "END-TO-END" headline and optimize for desktop & mobile.
 
-Changes made:
-- index.html, styles.css, script.js updated to implement a simple runner game displayed on the root page.
-- Game is intentionally silly: extra obstacle types (banana, toilet), powerups that make the player big or tiny, goofy sound beeps, random gags.
-- Keeps a clean black-and-white aesthetic and the brand text 'ENDT-TO-END' visible.
+Files:
+- index.html (single, static page)
+- styles.css (responsive typography, safe-area support)
+- script.js (empty)
 
-How to use:
-- Open index.html or deploy the repo as a static site on Vercel / Cloudflare Pages.
-- Controls: Space, click, or tap to jump. Press Start to begin.
+Preview locally:
+1. Clone the repo.
+2. In the repository root run: python3 -m http.server 8000
+3. Open http://localhost:8000
 
-If you want any of these tweaks next, tell me which and I'll update the code:
-- different obstacle art (SVG sprites) or colors
-- local audio files for better sounds
-- touch-specific controls and on-screen buttons
-- high score persistence using localStorage
+Deploy:
+- Vercel: Import the repo, no build step.
+- Cloudflare Pages: Create a Pages project, set framework to "None (Static HTML)", output directory '/'.
